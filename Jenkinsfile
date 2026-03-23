@@ -5,11 +5,13 @@ pipeline {
         AWS_REGION = 'us-east-1' 
     }
     stages {
+
+        // AWS Credentials documentation - https://plugins.jenkins.io/aws-credentials/
         stage('Set AWS Credentials') {
             steps {
                 withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'AWS_SECRET_ACCESS_KEY' 
+                    credentialsId: 'jenkinsTest' //this need to be changed before runtime to match the Jenkins credential 
                 ]]) {
                     sh '''
                     echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID"
@@ -20,7 +22,7 @@ pipeline {
         }
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/Velma098/aaron-dm-mcdonald_jenkins-s3-test' 
+                git branch: 'main', url: 'https://github.com/Velma098/jenkins-s3-test' 
             }
         }
 
@@ -57,7 +59,7 @@ pipeline {
             steps {
                 withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'AWS_SECRET_ACCESS_KEY'
+                    credentialsId: 'jenkinsTest'
                 ]]) {
                     sh '''
                     export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
@@ -72,7 +74,7 @@ pipeline {
             steps {
                 withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'AWS_SECRET_ACCESS_KEY'
+                    credentialsId: 'jenkinsTest'
                 ]]) {
                     sh '''
                     export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
@@ -87,7 +89,7 @@ pipeline {
                 input message: "Approve Terraform Apply?", ok: "Deploy"
                 withCredentials([[
                     $class: 'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'AWS_SECRET_ACCESS_KEY'
+                    credentialsId: 'jenkinsTest'
                 ]]) {
                     sh '''
                     export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
